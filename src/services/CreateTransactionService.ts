@@ -17,19 +17,15 @@ class CreateTransactionService {
 
   public execute({ title, value, type }: TransactionDTO): Transaction {
     const currentBalance = this.transactionsRepository.getBalance().total;
-    if (type !== 'income' && type !== 'outcome') {
-      throw Error('Invalid transaction type');
-    } else {
-      const validateTransaction = validTransaction.execute({
-        value,
-        balance: currentBalance,
-        type,
-      });
-      if (validateTransaction.isValid) {
-        return this.transactionsRepository.create({ title, value, type });
-      }
-      throw Error(validateTransaction.errorMessage);
+    const validateTransaction = validTransaction.execute({
+      value,
+      balance: currentBalance,
+      type,
+    });
+    if (validateTransaction.isValid) {
+      return this.transactionsRepository.create({ title, value, type });
     }
+    throw Error(validateTransaction.errorMessage);
   }
 }
 
