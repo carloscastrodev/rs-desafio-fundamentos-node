@@ -4,37 +4,13 @@ interface TransactionDTO {
   type: 'income' | 'outcome';
 }
 
-interface ValidateDTO {
-  isValid: boolean;
-  errorMessage?: string;
-}
-
 class ValidateTransactionService {
-  private isTransactionValid: boolean;
-
-  private errorMessage: string;
-
-  constructor() {
-    this.isTransactionValid = true;
-    this.errorMessage = 'No error.';
-  }
-
-  public execute({ value, balance, type }: TransactionDTO): ValidateDTO {
+  public execute({ value, balance, type }: TransactionDTO): void {
     if (type !== 'outcome' && type !== 'income') {
-      this.isTransactionValid = false;
-      this.errorMessage = 'Invalid transaction type.';
+      throw Error('Invalid transaction type.');
     } else if (type === 'outcome' && balance < value) {
-      this.isTransactionValid = false;
-      this.errorMessage =
-        "Doesn't have enough money in balance for this transaction.";
-    } else {
-      this.isTransactionValid = true;
-      this.errorMessage = 'No error.';
+      throw Error("Doesn't have enough money in balance for this transaction.");
     }
-    return {
-      isValid: this.isTransactionValid,
-      errorMessage: this.errorMessage,
-    };
   }
 }
 
